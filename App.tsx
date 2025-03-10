@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 // import type {PropsWithChildren} from 'react';
 import {
   // ScrollView,
@@ -17,6 +17,7 @@ import {
   SafeAreaView,
   Platform,
   FlatList,
+  Animated,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -349,9 +350,18 @@ function App(): React.JSX.Element {
   const [display, setDisplay] = useState('list');
   const [isVisible, setIsVisible] = useState(false);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const slideAnim = useState(new Animated.Value(1))[0]; // Inicia en 1 (oculto)
+
+  useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: isVisible ? 0 : 1, // 0 = visible, 1 = oculto
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [isVisible, slideAnim]);
+  // const backgroundStyle = {
+  //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  // };
 
   // const flatlistStyle = {
   //   paddingBottom:  '20%',
@@ -365,7 +375,7 @@ function App(): React.JSX.Element {
   // const safePadding = '10%';s
 
   return (
-    <View style={{flex: 1, backgroundColor: backgroundStyle.backgroundColor}}>
+    <View style={styles.principalContainer}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={'red'}
@@ -406,13 +416,19 @@ function App(): React.JSX.Element {
           </View>
         </View>
       </SafeAreaView>
-      <SlideUpCard isVisible={isVisible} setIsVisible={setIsVisible} />
-      <BottomButton setIsVisible={setIsVisible} />
+      {isVisible && (
+        <SlideUpCard isVisible={isVisible} setIsVisible={setIsVisible} />
+      )}
+      <BottomButton isVisible={isVisible} setIsVisible={setIsVisible} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  principalContainer: {
+    flex: 1,
+    backgroundColor: Colors.lighter,
+  },
   row: {
     justifyContent: 'space-between',
   },

@@ -2,15 +2,12 @@ import React, {useState} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-export const BottomButton = ({setIsVisible}) => {
-  const [addDocument, setAddDocument] = useState(false);
-
+export const BottomButton = ({setIsVisible, isVisible}) => {
   function buttonTouched() {
-    setAddDocument(true);
     setIsVisible(true);
   }
 
-  const txt = !addDocument ? 'Submit' : '+ Add document';
+  const txt = isVisible ? 'Submit' : '+ Add document';
   return (
     <View style={styles.mainContainer}>
       <TouchableOpacity

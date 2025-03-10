@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -10,37 +10,33 @@ import {
 } from 'react-native';
 
 export const SlideUpCard = ({isVisible, setIsVisible}) => {
-  const slideAnim = useState(new Animated.Value(1))[0]; // Inicia en 1 (oculto)
+  const slideAnim = useRef(new Animated.Value(300)).current;
 
   useEffect(() => {
     Animated.timing(slideAnim, {
-      toValue: isVisible ? 0 : 1, // 0 = visible, 1 = oculto
+      toValue: isVisible ? 0 : '30%',
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [isVisible, slideAnim]);
+  });
 
   return (
     <View style={styles.container}>
+      {/* <TouchableOpacity
+        style={styles.overlay}
+        onPress={() => setIsVisible(false)}
+      /> */}
       <Animated.View
         style={[
           styles.animatedView,
-          // {
-          //   transform: [
-          //     {
-          //       translateY: slideAnim.interpolate({
-          //         inputRange: [0, 1],
-          //         outputRange: [0, '100%'], // 100% de la altura cuando está oculto
-          //       }),
-          //     },
-          //   ],
-          // },
+          {
+            transform: [{translateY: slideAnim}],
+          },
         ]}>
         <View style={styles.firstRowContainer}>
           <View style={styles.titleContainer}>
             <Text style={styles.textTitle}>Add document</Text>
           </View>
-          {/* <TouchableOpacity title="X" onPress={() => setIsVisible(false)} /> */}
           <TouchableOpacity
             style={styles.iconContainer}
             onPress={() => setIsVisible(false)}>
@@ -88,9 +84,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    backgroundColor: '#00000033',
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'flex-end',
   },
+  // overlay: {
+  //   position: 'absolute',
+  //   width: '100%',
+  //   height: '100%',
+  // },
   animatedView: {
     height: '50%',
     width: '100%',
@@ -104,8 +105,6 @@ const styles = StyleSheet.create({
   },
   firstRowContainer: {
     justifyContent: 'space-between',
-    alignContent: 'center',
-    // backgroundColor: 'red',
     flexDirection: 'row',
     width: '100%',
     height: 50,
@@ -115,7 +114,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '10%',
-    // backgroundColor: 'blue',
   },
   icon: {
     resizeMode: 'contain',
@@ -126,13 +124,11 @@ const styles = StyleSheet.create({
   textTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    // backgroundColor: 'blue',
     textAlign: 'center',
   },
   textSubTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    // backgroundColor: 'blue',
     textAlign: 'center',
   },
   rowsContainer: {
@@ -140,7 +136,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 5,
     width: '100%',
-    // height: 60
   },
   fileButton: {
     borderRadius: 10,
@@ -156,7 +151,6 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: '100%',
-    // width: '100%',
     paddingHorizontal: '2.5%',
   },
   textInputContainer: {
@@ -166,11 +160,5 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     height: 45,
     width: '100%',
-    // backgroundColor: 'red',
   },
-  // icon: {
-  //   resizeMode: "contain",
-  //   width: 24,
-  //   height: 24
-  // }
 });
