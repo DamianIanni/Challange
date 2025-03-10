@@ -2,8 +2,13 @@ import React, {useState} from 'react';
 import {Image, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-export const ChangeDisplayButton = () => {
+export const ChangeDisplayButton = ({changeDisplay}) => {
   const [display, setDisplay] = useState(false);
+
+  const onChangeDisplay = (state, type) => {
+    setDisplay(state);
+    changeDisplay(type);
+  };
 
   const styles = StyleSheet.create({
     mainContainer: {
@@ -54,7 +59,7 @@ export const ChangeDisplayButton = () => {
     <View style={styles.mainContainer}>
       <TouchableOpacity
         style={styles.iconContainerList}
-        onPress={() => setDisplay(false)}>
+        onPress={() => onChangeDisplay(false, 'list')}>
         <Image
           style={styles.iconList}
           source={require('../../assests/icons/list.png')}
@@ -62,7 +67,7 @@ export const ChangeDisplayButton = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconContainerGrid}
-        onPress={() => setDisplay(true)}>
+        onPress={() => onChangeDisplay(true, 'grid')}>
         <Image
           style={styles.iconGrid}
           source={require('../../assests/icons/grid.png')}

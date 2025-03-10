@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 // import type {PropsWithChildren} from 'react';
 import {
   // ScrollView,
@@ -26,8 +26,31 @@ import {BottomButton} from './src/components/buttons/BottomButon';
 import {ChangeDisplayButton} from './src/components/buttons/ChangeDisplayButton';
 import {SortButton} from './src/components/buttons/SortButton';
 import {ListCard} from './src/components/cards/ListCard';
+import {GridCard} from './src/components/cards/GridCard';
 
 const data = [
+  {
+    Attachments: ['European Amber Lager', 'Wood-aged Beer'],
+    Contributors: [
+      {
+        ID: '1b41861e-51e2-4bf4-ba13-b20f01ce81e5',
+        Name: 'Jasen Crona',
+      },
+      {
+        ID: '2a1d6ed0-7d2d-4dc6-b3ea-436a38fd409e',
+        Name: 'Candace Jaskolski',
+      },
+      {
+        ID: '9ae28565-4a1c-42e3-9ae8-e39e6f783e14',
+        Name: 'Rosemarie Schaden',
+      },
+    ],
+    CreatedAt: '1912-03-08T06:01:39.382278739Z',
+    ID: '69517c79-a4b2-4f64-9c83-20e5678e4514',
+    Title: 'Arrogant Bastard Ale',
+    UpdatedAt: '1952-02-29T22:21:13.817038244Z',
+    Version: '5.3.15',
+  },
   {
     Attachments: ['European Amber Lager', 'Wood-aged Beer'],
     Contributors: [
@@ -91,7 +114,7 @@ const data = [
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-
+  const [display, setDisplay] = useState('list');
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -113,14 +136,30 @@ function App(): React.JSX.Element {
         <View style={styles.viewContainer}>
           <View style={styles.orderViewContainer}>
             <SortButton />
-            <ChangeDisplayButton />
+            <ChangeDisplayButton changeDisplay={setDisplay} />
           </View>
-          <View>
-            <FlatList
-              data={data}
-              renderItem={props => <ListCard item={props.item} />}
-              keyExtractor={item => item.ID}
-            />
+          <View style={styles.flatlistContainer}>
+            {display === 'list' ? (
+              <FlatList
+                data={data}
+                key={display}
+                renderItem={props => <ListCard data={props.item} />}
+                keyExtractor={item => item.ID}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.flatlistStyle}
+              />
+            ) : (
+              <FlatList
+                key={display}
+                data={data}
+                renderItem={props => <GridCard data={props.item} />}
+                keyExtractor={item => item.ID}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.flatlistStyle}
+                columnWrapperStyle={styles.row}
+              />
+            )}
           </View>
           <BottomButton />
         </View>
@@ -130,9 +169,27 @@ function App(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
+  row: {
+    justifyContent: 'space-between',
+  },
+  flatlistContainer: {
+    width: '100%',
+    height: '80%',
+    // backgroundColor: 'red',
+    // alignContent: 'space-between',
+  },
+  flatlistStyle: {
+    paddingBottom: '35%',
+    // paddingTop: '2.5%',
+    paddingHorizontal: '5%',
+    justifyContent: 'space-between',
+    // alignItems: 'center',
+    // backgroundColor: 'blue',
+  },
+
   viewContainer: {
     flex: 1,
-    paddingHorizontal: '5%',
+    // paddingHorizontal: '5%',
     flexDirection: 'column',
     width: '100%',
     backgroundColor: Colors.lighter,
@@ -150,8 +207,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 80,
-    // padding: '5%',
+    height: 60,
+    paddingHorizontal: '5%',
     width: '100%',
   },
 });

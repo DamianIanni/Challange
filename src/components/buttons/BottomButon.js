@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export const BottomButton = () => {
   const [addDocument, setAddDocument] = useState(false);
@@ -28,15 +29,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   mainContainer: {
-    width: '120%',
+    width: '100%',
     height: 100,
-    // backgroundColor: 'red',
+    backgroundColor: Colors.lighter,
     justifyContent: 'center',
     alignItems: 'center',
     borderTopColor: 'lightgrey',
     borderTopWidth: 2,
     position: 'absolute',
     bottom: 0,
+    // paddingTop: 20,
   },
   textTitle: {
     fontSize: 18,

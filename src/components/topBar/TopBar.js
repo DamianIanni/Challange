@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   badge: {
     position: 'absolute',
     top: '30%',
-    right: '6%',
+    right: '7%',
     backgroundColor: '#007AFF',
     borderRadius: 10,
     width: 15,
