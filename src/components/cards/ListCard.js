@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     // marginVertical: '2%',
     borderRadius: 10,
-    gap: '5%',
+    marginVertical: '2.5%',
     // width: '100%'
     shadowColor: '#000',
     shadowOffset: {

@@ -1,33 +1,28 @@
 import React, {useState} from 'react';
-import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-export const BottomButton = () => {
+export const BottomButton = ({setIsVisible}) => {
   const [addDocument, setAddDocument] = useState(false);
 
-  const txt = addDocument ? 'Submit' : '+ Add document';
+  function buttonTouched() {
+    setAddDocument(true);
+    setIsVisible(true);
+  }
+
+  const txt = !addDocument ? 'Submit' : '+ Add document';
   return (
     <View style={styles.mainContainer}>
       <TouchableOpacity
         style={styles.touchableOpacityContainer}
-        onPress={() => setAddDocument(!addDocument)}>
-        {/* <View style={styles.textContainer}> */}
+        onPress={() => buttonTouched()}>
         <Text style={styles.textTitle}>{txt}</Text>
-        {/* </View> */}
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  touchableOpacityContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '80%',
-    backgroundColor: '#007AFF',
-    height: 50,
-    borderRadius: 10,
-  },
   mainContainer: {
     width: '100%',
     height: 100,
@@ -36,9 +31,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopColor: 'lightgrey',
     borderTopWidth: 2,
-    position: 'absolute',
+    // position: 'absolute',
     bottom: 0,
     // paddingTop: 20,
+  },
+  touchableOpacityContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    backgroundColor: '#007AFF',
+    height: 50,
+    borderRadius: 10,
   },
   textTitle: {
     fontSize: 18,
