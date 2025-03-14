@@ -1,22 +1,26 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View, Image, StyleSheet} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-export const TopBar = ({notificationAmount = 2}) => {
+interface TopBarProps {
+  notificationsAmount: number;
+}
+
+export const TopBar: React.FC<TopBarProps> = ({notificationsAmount}) => {
+  // useEffect(() => {}, []);
   return (
     <View style={styles.mainContainer}>
-      {/* <View style={styles.textContainer}> */}
       <Text style={styles.textTitle}>Documents</Text>
-      {/* </View> */}
       <View style={styles.iconContainer}>
         <Image
           source={require('../../assests/icons/bell.png')}
           style={styles.icon}
         />
       </View>
-      {notificationAmount > 0 && (
+      {notificationsAmount > 0 && (
         <View style={styles.badge}>
-          <Text style={styles.badgeText}>{notificationAmount}</Text>
+          <Text style={styles.badgeText}>
+            {notificationsAmount < 100 ? notificationsAmount : '99'}
+          </Text>
         </View>
       )}
     </View>
@@ -38,13 +42,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 700,
   },
-  //   textContainer: {
-  //     position: 'absolute',
-  //     left: 10,
-  //   },
   iconContainer: {
-    //   position: 'absolute',
-    //   right: 10,
     justifyContent: 'center',
     alignItems: 'center',
     height: 48,
@@ -60,8 +58,8 @@ const styles = StyleSheet.create({
     right: '7%',
     backgroundColor: '#007AFF',
     borderRadius: 10,
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

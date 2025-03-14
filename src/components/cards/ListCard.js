@@ -8,8 +8,16 @@ export const ListCard = data => {
 
   return (
     <View style={styles.mainContainer}>
+      {/* <View style={styles.titleContainer}>
+        <Text numberOfLines={1} style={styles.titleCard}>
+          {Title}
+        </Text>
+        <Text style={styles.text}>Version {Version}</Text>
+      </View> */}
       <View style={styles.titleContainer}>
-        <Text style={styles.titleCard}>{Title}</Text>
+        <Text numberOfLines={1} style={styles.titleCard}>
+          {Title}
+        </Text>
         <Text style={styles.text}>Version {Version}</Text>
       </View>
       <View style={styles.columnsContainer}>
@@ -109,6 +117,7 @@ const styles = StyleSheet.create({
   titleCard: {
     fontWeight: 700,
     fontSize: 18,
+    maxWidth: '60%',
   },
   titleColumn: {
     fontWeight: 700,
