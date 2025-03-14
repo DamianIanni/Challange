@@ -1,20 +1,21 @@
 import {Alert} from 'react-native';
 import axios, {AxiosError} from 'axios';
+import {DocumentModel} from '../models/documentModel';
 
-interface Contributor {
-  ID: string;
-  Name: string;
-}
+// interface Contributor {
+//   ID: string;
+//   Name: string;
+// }
 
-export interface Document {
-  ID: string;
-  Title: string;
-  Attachments: string[];
-  Contributors: Contributor[];
-  CreatedAt: string;
-  UpdatedAt: string;
-  Version: string;
-}
+// export interface Document {
+//   ID: string;
+//   Title: string;
+//   Attachments: string[];
+//   Contributors: Contributor[];
+//   CreatedAt: string;
+//   UpdatedAt: string;
+//   Version: string;
+// }
 
 const client = axios.create({
   baseURL: 'http://localhost:8080',
@@ -24,9 +25,9 @@ const client = axios.create({
   },
 });
 
-async function callDocuments(): Promise<Document[] | null> {
+async function callDocuments(): Promise<DocumentModel[] | null> {
   try {
-    const res = await client.get<Document[]>('/documents');
+    const res = await client.get<DocumentModel[]>('/documents');
     return res.data;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -50,6 +51,6 @@ async function callDocuments(): Promise<Document[] | null> {
   }
 }
 
-export const getDocuments = async (): Promise<Document[] | null> => {
+export const getDocuments = async (): Promise<DocumentModel[] | null> => {
   return await callDocuments();
 };

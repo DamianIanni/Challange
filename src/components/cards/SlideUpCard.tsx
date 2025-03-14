@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import {Document} from '../../services/requests.ts';
+// import {Document} from '../../services/requests.ts';
+import {DocumentModel} from '../../models/documentModel.ts';
 import {MockUpFileModal} from '../modals/MockUpFileModal.tsx';
 
 interface slideUpCardProps {
@@ -21,10 +22,10 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
   closeSlideUpCard,
 }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [fileSelected, setFileSelected] = useState<Document | null>(null);
+  const [fileSelected, setFileSelected] = useState<DocumentModel | null>(null);
   const slideAnim = useRef(new Animated.Value(300)).current;
 
-  function showModal(file: Document) {
+  function showModal(file: DocumentModel) {
     setFileSelected(file);
     setModalVisible(!modalVisible);
   }

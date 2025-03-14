@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
-import {Text, View, Image, StyleSheet} from 'react-native';
+import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 interface TopBarProps {
   notificationsAmount: number;
@@ -7,21 +8,26 @@ interface TopBarProps {
 
 export const TopBar: React.FC<TopBarProps> = ({notificationsAmount}) => {
   // useEffect(() => {}, []);
+  const navigation = useNavigation();
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.textTitle}>Documents</Text>
-      <View style={styles.iconContainer}>
+      <TouchableOpacity
+        style={styles.iconContainer}
+        onPress={() => navigation.navigate('Notification')}>
         <Image
           source={require('../../assests/icons/bell.png')}
           style={styles.icon}
         />
-      </View>
+      </TouchableOpacity>
       {notificationsAmount > 0 && (
-        <View style={styles.badge}>
+        <TouchableOpacity
+          style={styles.badge}
+          onPress={() => navigation.navigate('Notification')}>
           <Text style={styles.badgeText}>
             {notificationsAmount < 100 ? notificationsAmount : '99'}
           </Text>
-        </View>
+        </TouchableOpacity>
       )}
     </View>
   );
