@@ -3,16 +3,16 @@ import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {file1} from '../../mocks/file1';
 import {file2} from '../../mocks/file2';
 import {file3} from '../../mocks/file3';
-import {Document} from '../../services/requests';
+import {DocumentModel} from '../../models/documentModel';
 
 interface mockUpFileModalProps {
   modalVisible: boolean;
-  setModalVisible: (arg0: Document) => void;
+  showModal: (arg0: DocumentModel) => void;
 }
 
 export const MockUpFileModal: React.FC<mockUpFileModalProps> = ({
   modalVisible,
-  setModalVisible,
+  showModal,
 }) => {
   return (
     <Modal animationType="fade" transparent={true} visible={modalVisible}>
@@ -23,17 +23,17 @@ export const MockUpFileModal: React.FC<mockUpFileModalProps> = ({
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(file1)}>
+              onPress={() => showModal(file1)}>
               <Text style={styles.textStyle}>File 1</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(file2)}>
+              onPress={() => showModal(file2)}>
               <Text style={styles.textStyle}>File 2</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(file3)}>
+              onPress={() => showModal(file3)}>
               <Text style={styles.textStyle}>File 3</Text>
             </TouchableOpacity>
           </View>

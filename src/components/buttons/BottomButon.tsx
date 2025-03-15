@@ -1,13 +1,30 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {DocumentModel} from '../../models/documentModel';
+import {storageService} from '../../utils/newstorage';
 
-export const BottomButton = ({setIsVisible, isVisible}) => {
+interface customProps {
+  setIsVisible: (isVisible: boolean) => void;
+  isVisible: boolean;
+  newFile: DocumentModel | null;
+}
+
+export const BottomButton: React.FC<customProps> = ({
+  setIsVisible,
+  isVisible,
+  newFile,
+}) => {
+  const txt = isVisible ? 'Submit' : '+ Add document';
   function buttonTouched() {
+    if (newFile !== null && isVisible) {
+      storageService.pushNewDocument('documents', newFile);
+      setIsVisible(false);
+      return;
+    }
     setIsVisible(true);
   }
 
-  const txt = isVisible ? 'Submit' : '+ Add document';
   return (
     <View style={styles.mainContainer}>
       <TouchableOpacity

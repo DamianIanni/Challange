@@ -17,10 +17,10 @@ class WebSocketService {
       this.isConnected = true;
     };
 
-    this.socket.onmessage = event => {
-      console.log('Mensaje recibido:', event.data);
-      this.messages.push(event.data); // Guardar los mensajes en el array
-    };
+    // this.socket.onmessage = event => {
+    //   console.log('Mensaje recibido:', event.data);
+    //   this.messages.push(event.data); // Guardar los mensajes en el array
+    // };
 
     this.socket.onerror = error => {
       console.error('Error en la conexión WebSocket:', error.message);

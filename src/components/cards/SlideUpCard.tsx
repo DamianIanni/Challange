@@ -7,27 +7,42 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  TouchableWithoutFeedback,
+  Keyboard,
+  SafeAreaView,
 } from 'react-native';
-// import {Document} from '../../services/requests.ts';
 import {DocumentModel} from '../../models/documentModel.ts';
 import {MockUpFileModal} from '../modals/MockUpFileModal.tsx';
 
 interface slideUpCardProps {
   isVisible: boolean;
   closeSlideUpCard: () => void;
+  setNewFile: (arg0: DocumentModel) => void;
 }
 
 export const SlideUpCard: React.FC<slideUpCardProps> = ({
   isVisible,
   closeSlideUpCard,
+  setNewFile,
 }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [fileSelected, setFileSelected] = useState<DocumentModel | null>(null);
+  const [fileName, setFileName] = useState<string>('');
+  const [fileVersion, setFileVersion] = useState<string>('');
   const slideAnim = useRef(new Animated.Value(300)).current;
 
   function showModal(file: DocumentModel) {
     setFileSelected(file);
+    setNewFile(file);
     setModalVisible(!modalVisible);
+  }
+
+  function onChangeFileName(text: string) {
+    setFileName(text);
+  }
+
+  function onChangeFileVersion(text: string) {
+    setFileVersion(text);
   }
 
   useEffect(() => {
@@ -39,71 +54,86 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
   });
 
   return (
-    <View style={styles.container}>
-      {/* <TouchableOpacity
-        style={styles.overlay}
-        onPress={() => setIsVisible(false)}
-      /> */}
-      <Animated.View
-        style={[
-          styles.animatedView,
-          {
-            transform: [{translateY: slideAnim}],
-          },
-        ]}>
-        <MockUpFileModal
-          modalVisible={modalVisible}
-          setModalVisible={showModal}
-        />
-        <View style={styles.firstRowContainer}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.textTitle}>Add document</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.iconContainer}
-            onPress={() => closeSlideUpCard()}>
-            <Image
-              style={styles.icon}
-              source={require('../../assests/icons/close.png')}
-              tintColor={'grey'}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <SafeAreaView style={{flex: 1}}>
+          <Animated.View
+            style={[
+              styles.animatedView,
+              {
+                transform: [{translateY: slideAnim}],
+              },
+            ]}>
+            <MockUpFileModal
+              modalVisible={modalVisible}
+              showModal={showModal}
             />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.textSubTitle}>Document informations</Text>
-        <View style={styles.rowsContainer}>
-          <Text style={styles.textSubTitle}>Name</Text>
-          <View style={styles.textInputContainer}>
-            <TextInput placeholder="Placeholder" style={styles.textInput} />
-          </View>
-        </View>
-        <View style={styles.rowsContainer}>
-          <Text style={styles.textSubTitle}>Version</Text>
-          <View style={styles.textInputContainer}>
-            <TextInput placeholder="Placeholder" style={styles.textInput} />
-          </View>
-        </View>
-        <View style={styles.rowsContainer}>
-          <Text style={styles.textSubTitle}>File</Text>
-          <TouchableOpacity
-            style={styles.fileButton}
-            onPress={() => setModalVisible(true)}>
-            <Image
-              source={require('../../assests/icons/doc.png')}
-              style={{width: 24, height: 24}}
-              tintColor={'#007AFF'}
-            />
-            <Text
-              style={[styles.textSubTitle, {color: '#007AFF', fontSize: 14}]}>
-              {fileSelected ? fileSelected.Title : 'Choose file'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-    </View>
+            <View style={styles.firstRowContainer}>
+              <View style={styles.titleContainer}>
+                <Text style={styles.textTitle}>Add document</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.iconContainer}
+                onPress={() => closeSlideUpCard()}>
+                <Image
+                  style={styles.icon}
+                  source={require('../../assests/icons/close.png')}
+                  tintColor={'grey'}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.textSubTitle}>Document informations</Text>
+            <View style={styles.rowsContainer}>
+              <Text style={styles.textSubTitle}>Name</Text>
+              <View style={styles.textInputContainer}>
+                <TextInput
+                  placeholder="Document Name"
+                  value={fileName}
+                  style={styles.textInput}
+                  onChange={e => onChangeFileName(e.nativeEvent.text)}
+                />
+              </View>
+            </View>
+            <View style={styles.rowsContainer}>
+              <Text style={styles.textSubTitle}>Version</Text>
+              <View style={styles.textInputContainer}>
+                <TextInput
+                  keyboardType="numeric"
+                  placeholder="Document Version"
+                  value={fileVersion}
+                  style={styles.textInput}
+                  onChange={e => onChangeFileVersion(e.nativeEvent.text)}
+                />
+              </View>
+            </View>
+            <View style={styles.rowsContainer}>
+              <Text style={styles.textSubTitle}>File</Text>
+              <TouchableOpacity
+                style={styles.fileButton}
+                onPress={() => setModalVisible(true)}>
+                <Image
+                  source={require('../../assests/icons/doc.png')}
+                  style={{width: 24, height: 24}}
+                  tintColor={'#007AFF'}
+                />
+                <Text
+                  style={[
+                    styles.textSubTitle,
+                    {color: '#007AFF', fontSize: 14},
+                  ]}>
+                  {fileSelected ? fileSelected.Title : 'Choose file'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </SafeAreaView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
+  animatedViewContainer: {height: '100%'},
   container: {
     position: 'absolute',
     width: '100%',
@@ -111,13 +141,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'flex-end',
   },
-  // overlay: {
-  //   position: 'absolute',
-  //   width: '100%',
-  //   height: '100%',
-  // },
   animatedView: {
-    height: '50%',
+    height: '100%',
     width: '100%',
     backgroundColor: 'white',
     borderTopRightRadius: 10,

@@ -19,14 +19,19 @@ import {SortButton} from '../components/buttons/SortButton';
 import {ListCard} from '../components/cards/ListCard';
 import {GridCard} from '../components/cards/GridCard';
 import {SlideUpCard} from '../components/cards/SlideUpCard';
-import {getDocuments} from '../services/requests';
+
+import {DocumentModel} from '../models/documentModel';
+
 import WebSocketService from '../services/webSoquet';
 
+// import {storageService} from '../utils/mmkvStorage';
+import {storageService} from '../utils/newstorage';
+
 export const HomeScreen: React.FC = () => {
-  const isDarkMode = useColorScheme() === 'dark';
   const [display, setDisplay] = useState('list');
   const [isVisible, setIsVisible] = useState(false);
-  const [flatlistData, setFlatlistData] = useState([]);
+  const [newFile, setNewFile] = useState<DocumentModel | null>(null);
+  const [flatlistData, setFlatlistData] = useState<DocumentModel[]>([]);
   // const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
   const websocket = new WebSocketService();
@@ -35,14 +40,16 @@ export const HomeScreen: React.FC = () => {
     setIsVisible(false);
   }
 
-  async function apiCall() {
-    const reqData = await getDocuments();
-    if (reqData !== null) {
-      setFlatlistData(reqData);
+  async function getDoc() {
+    const arrDoc = await storageService.getDocumentsArray('documents');
+    if (arrDoc !== null) {
+      setFlatlistData(arrDoc);
+      console.log('Se llama2');
     }
   }
 
   useEffect(() => {
+    getDoc();
     // Evitar que el WebSocket se conecte nuevamente si ya está conectado
     if (!websocket.isConnected) {
       websocket.connect();
@@ -64,14 +71,11 @@ export const HomeScreen: React.FC = () => {
       clearTimeout(timeout);
       websocket.close(); // Asegurarse de que se cierre el WebSocket al desmontar
     };
-  }, []);
+  }, [isVisible]);
 
   return (
     <View style={styles.principalContainer}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={'red'}
-      />
+      <StatusBar barStyle={'dark-content'} backgroundColor={'red'} />
       {Platform.OS === 'ios' && (
         <View style={{backgroundColor: 'white', height: 70}} />
       )}
@@ -81,16 +85,10 @@ export const HomeScreen: React.FC = () => {
         <View style={styles.viewContainer}>
           <View style={styles.orderViewContainer}>
             <Button
-              title="call"
-              onPress={() => {
-                apiCall();
-              }}
-            />
-            <Button
-              title="close"
-              onPress={() => {
-                websocket.close();
-                console.log('CERRADo');
+              title="clear"
+              onPress={async () => {
+                await storageService.clearDocumentsStorage();
+                console.log('LIMPADO');
               }}
             />
             <SortButton />
@@ -123,9 +121,14 @@ export const HomeScreen: React.FC = () => {
         <SlideUpCard
           isVisible={isVisible}
           closeSlideUpCard={closeSlideUpCard}
+          setNewFile={setNewFile}
         />
       )}
-      <BottomButton isVisible={isVisible} setIsVisible={setIsVisible} />
+      <BottomButton
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        newFile={newFile}
+      />
     </View>
   );
 };
