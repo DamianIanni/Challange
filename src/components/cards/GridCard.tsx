@@ -1,8 +1,12 @@
 import {View, Text, StyleSheet} from 'react-native';
+import {DocumentModel} from '../../models/documentModel';
 
-export const GridCard = data => {
-  const {Version, ID, Title, Contributors, Attachments, CreatedAt, UpdatedAt} =
-    data.data;
+interface CustomProps {
+  data: DocumentModel;
+}
+
+export const GridCard: React.FC<CustomProps> = ({data}) => {
+  const {Version, Title, CreatedAt, UpdatedAt} = data;
   return (
     <View style={styles.mainContainer}>
       <Text numberOfLines={1} style={styles.titleCard}>

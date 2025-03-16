@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 export const SortButton = () => {

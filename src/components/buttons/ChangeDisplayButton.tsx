@@ -2,10 +2,14 @@ import React, {useState} from 'react';
 import {Image, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-export const ChangeDisplayButton = ({changeDisplay}) => {
+interface customProps {
+  changeDisplay: (arg0: string) => void;
+}
+
+export const ChangeDisplayButton: React.FC<customProps> = ({changeDisplay}) => {
   const [display, setDisplay] = useState(false);
 
-  const onChangeDisplay = (state, type) => {
+  const onChangeDisplay = (state: boolean, type: string) => {
     setDisplay(state);
     changeDisplay(type);
   };

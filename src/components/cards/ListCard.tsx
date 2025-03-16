@@ -1,8 +1,13 @@
 import {View, Text, Image, StyleSheet} from 'react-native';
+import {DocumentModel} from '../../models/documentModel';
 
-export const ListCard = data => {
-  const {Version, ID, Title, Contributors, Attachments, CreatedAt, UpdatedAt} =
-    data.data;
+interface ListCardProps {
+  data: DocumentModel;
+}
+
+export const ListCard: React.FC<ListCardProps> = ({data}) => {
+  const {Version, Title, Contributors, Attachments, CreatedAt, UpdatedAt} =
+    data;
 
   // console.log('propse', Attachments);
 
