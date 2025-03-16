@@ -1,14 +1,74 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {storageService} from '../../utils/newstorage';
+import WebSocketService from '../../services/webSoquet';
+import {NotificationModel} from '../../models/notificationModel';
 
-interface TopBarProps {
-  notificationsAmount: number;
-}
-
-export const TopBar: React.FC<TopBarProps> = ({notificationsAmount}) => {
-  // useEffect(() => {}, []);
+export const TopBar: React.FC = () => {
+  const [notificationsAmount, setNotificationsAmount] = useState(0);
+  const [notificationBuffer, setNotificationBuffer] = useState<
+    NotificationModel[]
+  >([]);
   const navigation = useNavigation();
+  const websocket = new WebSocketService();
+
+  const fetchNotificationsCount = async () => {
+    const storedNotifications = await storageService.getNotificationsArray(
+      'notifications',
+    );
+    setNotificationsAmount(
+      storedNotifications ? storedNotifications.length : 0,
+    );
+  };
+
+  useEffect(() => {
+    fetchNotificationsCount();
+    websocket.connect();
+
+    if (websocket.socket) {
+      websocket.socket.onmessage = async event => {
+        console.log('Nueva notificación recibida:', event.data);
+
+        const newNotification = JSON.parse(event.data);
+
+        // Agregar la notificación al buffer con un límite de 99
+        setNotificationBuffer(prev => {
+          const updatedBuffer = [...prev, newNotification];
+          if (updatedBuffer.length > 99) {
+            updatedBuffer.shift(); // Eliminar la más antigua si se supera el límite
+          }
+          return updatedBuffer;
+        });
+      };
+    }
+
+    // Procesar una notificación cada 10 segundos
+    const interval = setInterval(async () => {
+      setNotificationBuffer(prevBuffer => {
+        if (prevBuffer.length > 0) {
+          const [firstNotification, ...rest] = prevBuffer;
+
+          console.log('Mostrando notificación:', firstNotification);
+
+          // Guardar la notificación en el almacenamiento
+          storageService.saveNotification('notifications', firstNotification);
+
+          // Actualizar el contador
+          fetchNotificationsCount();
+
+          return rest;
+        }
+        return prevBuffer;
+      });
+    }, 10000);
+
+    return () => {
+      websocket.close();
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.textTitle}>Documents</Text>
@@ -46,7 +106,7 @@ const styles = StyleSheet.create({
   icon: {resizeMode: 'contain', width: 36, height: 36},
   textTitle: {
     fontSize: 36,
-    fontWeight: 700,
+    fontWeight: '700',
   },
   iconContainer: {
     justifyContent: 'center',

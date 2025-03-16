@@ -22,7 +22,7 @@ import {SlideUpCard} from '../components/cards/SlideUpCard';
 
 import {DocumentModel} from '../models/documentModel';
 
-import WebSocketService from '../services/webSoquet';
+// import WebSocketService from '../services/webSoquet';
 
 import {storageService} from '../utils/newstorage';
 import {getDocuments} from '../services/requests';
@@ -32,8 +32,8 @@ export const HomeScreen: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [newFile, setNewFile] = useState<DocumentModel | null>(null);
   const [flatlistData, setFlatlistData] = useState<DocumentModel[]>([]);
-  const [messages, setMessages] = useState<String[]>([]);
-  const websocket = new WebSocketService();
+  // const [messages, setMessages] = useState<String[]>([]);
+  // const websocket = new WebSocketService();
 
   async function apiCall() {
     const storedDocuments = await storageService.getDocumentsArray('documents');
@@ -63,27 +63,6 @@ export const HomeScreen: React.FC = () => {
 
   useEffect(() => {
     apiCall();
-    // Evitar que el WebSocket se conecte nuevamente si ya está conectado
-    if (!websocket.isConnected) {
-      websocket.connect();
-    }
-
-    // Actualizar el estado con los mensajes recibidos
-    const interval = setInterval(() => {
-      setMessages(websocket.getMessages());
-    }, 1000);
-
-    const timeout = setTimeout(() => {
-      // Cerrar el WebSocket después de 3 segundos
-      websocket.close();
-      clearInterval(interval);
-    }, 3000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-      websocket.close(); // Asegurarse de que se cierre el WebSocket al desmontar
-    };
   }, [isVisible]);
 
   return (
@@ -94,7 +73,8 @@ export const HomeScreen: React.FC = () => {
       )}
 
       <SafeAreaView style={styles.safeViewContainer}>
-        <TopBar notificationsAmount={messages.length} />
+        {/* <TopBar notificationsAmount={messages.length} /> */}
+        <TopBar />
         <View style={styles.viewContainer}>
           <View style={styles.orderViewContainer}>
             <Button

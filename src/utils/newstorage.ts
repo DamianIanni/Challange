@@ -38,9 +38,21 @@ class StorageService {
   }
 
   // Guardar un array de objetos en el almacenamiento de notificaciones
-  async saveNotificationArray(key: string, notifications: NotificationModel[]) {
+  async saveNotification(key: string, notification: NotificationModel) {
     try {
-      const data = JSON.stringify(notifications);
+      const existingNotifications = await this.getNotificationsArray(key);
+      console.log('EXISTE', existingNotifications);
+
+      if (existingNotifications) {
+        if (existingNotifications.length >= 99) {
+          existingNotifications.shift();
+        }
+        existingNotifications.push(notification);
+        const data = JSON.stringify(existingNotifications);
+        await this.notificationsStorage.setStringAsync(key, data);
+        return;
+      }
+      const data = JSON.stringify([notification]);
       await this.notificationsStorage.setStringAsync(key, data);
     } catch (error) {
       console.error('Error saving notification array:', error);
@@ -60,14 +72,18 @@ class StorageService {
   }
 
   // Leer el array de objetos desde el almacenamiento de notificaciones
-  async getNotificationsArray(key: string): Promise<NotificationModel[]> {
+  async getNotificationsArray(
+    key: string,
+  ): Promise<NotificationModel[] | undefined> {
     try {
       const data = await this.notificationsStorage.getStringAsync(key);
-      const parseData = JSON.parse(data);
-      return parseData;
+      if (data) {
+        const parseData = JSON.parse(data);
+        return parseData;
+      }
+      return [];
     } catch (error) {
       console.error('Error getting notification array:', error);
-      return [];
     }
   }
 
@@ -83,18 +99,18 @@ class StorageService {
   //   }
 
   // Pushear un nuevo objeto al array existente en notificaciones
-  async pushNotificationObject(
-    key: string,
-    newNotification: NotificationModel,
-  ) {
-    try {
-      const notifications = await this.getNotificationsArray(key);
-      notifications.push(newNotification);
-      await this.saveNotificationArray(key, notifications);
-    } catch (error) {
-      console.error('Error pushing notification object:', error);
-    }
-  }
+  // async pushNotificationObject(
+  //   key: string,
+  //   newNotification: NotificationModel,
+  // ) {
+  //   try {
+  //     const notifications = await this.getNotificationsArray(key);
+  //     notifications.push(newNotification);
+  //     await this.saveNotification(key, notifications);
+  //   } catch (error) {
+  //     console.error('Error pushing notification object:', error);
+  //   }
+  // }
 
   // Pushear un nuevo array de objetos al existente en documentos
   async pushDocumentArray(key: string, newDocuments: DocumentModel[]) {
