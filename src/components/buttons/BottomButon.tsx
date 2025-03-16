@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -5,21 +6,23 @@ import {DocumentModel} from '../../models/documentModel';
 import {storageService} from '../../utils/newstorage';
 
 interface customProps {
-  setIsVisible: (isVisible: boolean) => void;
+  setIsVisible: (arg0: boolean) => void;
   isVisible: boolean;
   newFile: DocumentModel | null;
+  behaviorSlideUpCard: (arg0: string) => void;
 }
 
 export const BottomButton: React.FC<customProps> = ({
   setIsVisible,
   isVisible,
   newFile,
+  behaviorSlideUpCard,
 }) => {
   const txt = isVisible ? 'Submit' : '+ Add document';
-  function buttonTouched() {
+  async function buttonTouched() {
     if (newFile !== null && isVisible) {
-      storageService.pushNewDocument('documents', newFile);
-      setIsVisible(false);
+      await storageService.pushNewDocument('documents', newFile);
+      behaviorSlideUpCard('button');
       return;
     }
     setIsVisible(true);
@@ -28,7 +31,14 @@ export const BottomButton: React.FC<customProps> = ({
   return (
     <View style={styles.mainContainer}>
       <TouchableOpacity
-        style={styles.touchableOpacityContainer}
+        disabled={newFile === null && isVisible}
+        style={[
+          styles.touchableOpacityContainer,
+          {
+            backgroundColor:
+              newFile === null && isVisible ? 'lightgrey' : '#007AFF',
+          },
+        ]}
         onPress={() => buttonTouched()}>
         <Text style={styles.textTitle}>{txt}</Text>
       </TouchableOpacity>

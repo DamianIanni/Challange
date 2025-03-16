@@ -5,7 +5,6 @@ import {NotificationModel} from '../models/notificationModel';
 class StorageService {
   private documentsStorage: any;
   private notificationsStorage: any;
-  //   private recentDocument: any;
 
   constructor() {
     try {
@@ -15,9 +14,6 @@ class StorageService {
       this.notificationsStorage = new MMKVStorage.Loader()
         .withInstanceID('notificationsStorage')
         .initialize();
-      //   this.recentDocument = new MMKVStorage.Loader()
-      //     .withInstanceID('recentDocumentStorage')
-      //     .initialize();
     } catch (error) {
       console.error('Error initializing MMKV storage:', error);
     }
@@ -124,32 +120,12 @@ class StorageService {
   // Limpiar el almacenamiento de documentos
   async clearDocumentsStorage() {
     try {
-      await this.documentsStorage.clearStore(); // Elimina todos los datos almacenados en 'documentsStorage'
+      await this.documentsStorage.clearStore();
       console.log('Document storage cleared');
     } catch (error) {
       console.error('Error clearing document storage:', error);
     }
   }
-  //   async saveRecentDocumentCreated(key)
-  //   async saveRecentDocumentCreated(key: string, documents: DocumentModel) {
-  //     try {
-  //       const data = JSON.stringify(documents);
-  //       await this.recentDocument.setStringAsync(key, data);
-  //     } catch (error) {
-  //       console.error('Error saving recent document created:', error);
-  //     }
-  //   }
-
-  //   async getRecentDocumentCreated(key: string): Promise<DocumentModel | {}> {
-  //     try {
-  //       const data = await this.recentDocument.getStringAsync(key);
-  //       const parseData = JSON.parse(data);
-  //       return parseData;
-  //     } catch (error) {
-  //       console.error('Error getting notification array:', error);
-  //       return {};
-  //     }
-  //   }
 }
 
 export const storageService = new StorageService();

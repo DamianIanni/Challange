@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
@@ -16,13 +17,13 @@ import {MockUpFileModal} from '../modals/MockUpFileModal.tsx';
 
 interface slideUpCardProps {
   isVisible: boolean;
-  closeSlideUpCard: () => void;
+  behaviorSlideUpCard: (arg0: string) => void;
   setNewFile: (arg0: DocumentModel) => void;
 }
 
 export const SlideUpCard: React.FC<slideUpCardProps> = ({
   isVisible,
-  closeSlideUpCard,
+  behaviorSlideUpCard,
   setNewFile,
 }) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -32,8 +33,10 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
   const slideAnim = useRef(new Animated.Value(300)).current;
 
   function showModal(file: DocumentModel) {
+    const modifiedFile = {...file, Title: fileName, Version: fileVersion};
+
     setFileSelected(file);
-    setNewFile(file);
+    setNewFile(modifiedFile);
     setModalVisible(!modalVisible);
   }
 
@@ -74,7 +77,7 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
               </View>
               <TouchableOpacity
                 style={styles.iconContainer}
-                onPress={() => closeSlideUpCard()}>
+                onPress={() => behaviorSlideUpCard('slideUpCard')}>
                 <Image
                   style={styles.icon}
                   source={require('../../assests/icons/close.png')}
@@ -109,17 +112,28 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
             <View style={styles.rowsContainer}>
               <Text style={styles.textSubTitle}>File</Text>
               <TouchableOpacity
+                disabled={fileName !== '' && fileVersion !== '' ? false : true}
                 style={styles.fileButton}
                 onPress={() => setModalVisible(true)}>
                 <Image
                   source={require('../../assests/icons/doc.png')}
                   style={{width: 24, height: 24}}
-                  tintColor={'#007AFF'}
+                  tintColor={
+                    fileName !== '' && fileVersion !== ''
+                      ? '#007AFF'
+                      : 'lightgrey'
+                  }
                 />
                 <Text
                   style={[
                     styles.textSubTitle,
-                    {color: '#007AFF', fontSize: 14},
+                    {
+                      color:
+                        fileName !== '' && fileVersion !== ''
+                          ? '#007AFF'
+                          : 'lightgrey',
+                      fontSize: 14,
+                    },
                   ]}>
                   {fileSelected ? fileSelected.Title : 'Choose file'}
                 </Text>

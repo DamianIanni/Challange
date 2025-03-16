@@ -1,8 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
 import {
   StatusBar,
   StyleSheet,
-  useColorScheme,
   View,
   SafeAreaView,
   Platform,
@@ -24,32 +24,45 @@ import {DocumentModel} from '../models/documentModel';
 
 import WebSocketService from '../services/webSoquet';
 
-// import {storageService} from '../utils/mmkvStorage';
 import {storageService} from '../utils/newstorage';
+import {getDocuments} from '../services/requests';
 
 export const HomeScreen: React.FC = () => {
   const [display, setDisplay] = useState('list');
   const [isVisible, setIsVisible] = useState(false);
   const [newFile, setNewFile] = useState<DocumentModel | null>(null);
   const [flatlistData, setFlatlistData] = useState<DocumentModel[]>([]);
-  // const [isConnected, setIsConnected] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<String[]>([]);
   const websocket = new WebSocketService();
 
-  function closeSlideUpCard() {
-    setIsVisible(false);
-  }
+  async function apiCall() {
+    const storedDocuments = await storageService.getDocumentsArray('documents');
+    console.log('Storage:', storedDocuments);
 
-  async function getDoc() {
-    const arrDoc = await storageService.getDocumentsArray('documents');
-    if (arrDoc !== null) {
-      setFlatlistData(arrDoc);
-      console.log('Se llama2');
+    if (!storedDocuments || storedDocuments.length === 0) {
+      const fetchedDocuments = await getDocuments();
+
+      if (fetchedDocuments?.length) {
+        await storageService.saveDocumentArray('documents', fetchedDocuments);
+        setFlatlistData(fetchedDocuments);
+        console.log('Documentos guardados en el almacenamiento.');
+      }
+    } else {
+      setFlatlistData(storedDocuments);
     }
   }
 
+  function behaviorSlideUpCard(calledFrom: string) {
+    if (calledFrom === 'slideUpCard') {
+      setIsVisible(false);
+      return;
+    }
+    setNewFile(null);
+    setIsVisible(false);
+  }
+
   useEffect(() => {
-    getDoc();
+    apiCall();
     // Evitar que el WebSocket se conecte nuevamente si ya está conectado
     if (!websocket.isConnected) {
       websocket.connect();
@@ -88,6 +101,7 @@ export const HomeScreen: React.FC = () => {
               title="clear"
               onPress={async () => {
                 await storageService.clearDocumentsStorage();
+                setIsVisible(false);
                 console.log('LIMPADO');
               }}
             />
@@ -120,13 +134,14 @@ export const HomeScreen: React.FC = () => {
       {isVisible && (
         <SlideUpCard
           isVisible={isVisible}
-          closeSlideUpCard={closeSlideUpCard}
+          behaviorSlideUpCard={behaviorSlideUpCard}
           setNewFile={setNewFile}
         />
       )}
       <BottomButton
         isVisible={isVisible}
         setIsVisible={setIsVisible}
+        behaviorSlideUpCard={behaviorSlideUpCard}
         newFile={newFile}
       />
     </View>
