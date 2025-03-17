@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  NativeModules,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {storageService} from '../../utils/newstorage';
 import WebSocketService from '../../services/webSoquet';
@@ -12,6 +19,7 @@ export const TopBar: React.FC = () => {
   >([]);
   const navigation = useNavigation();
   const websocket = new WebSocketService();
+  const {MyNativeModule} = NativeModules;
 
   const fetchNotificationsCount = async () => {
     const storedNotifications = await storageService.getNotificationsArray(
@@ -26,9 +34,14 @@ export const TopBar: React.FC = () => {
     fetchNotificationsCount();
     websocket.connect();
 
+    MyNativeModule.getMessage((message: string) => {
+      console.log(message); // Esto imprimirá "Este es el mensaje desde el módulo nativo"
+    });
+    console.log('MODULE', MyNativeModule);
+
     if (websocket.socket) {
       websocket.socket.onmessage = async event => {
-        console.log('Nueva notificación recibida:', event.data);
+        // console.log('Nueva notificación recibida:', event.data);
 
         const newNotification = JSON.parse(event.data);
 
@@ -53,15 +66,18 @@ export const TopBar: React.FC = () => {
 
           // Guardar la notificación en el almacenamiento
           storageService.saveNotification('notifications', firstNotification);
-
           // Actualizar el contador
           fetchNotificationsCount();
 
+          MyNativeModule.showNotification(
+            firstNotification.UserName,
+            firstNotification.DocumentTitle,
+          );
           return rest;
         }
         return prevBuffer;
       });
-    }, 10000);
+    }, 20000);
 
     return () => {
       websocket.close();
