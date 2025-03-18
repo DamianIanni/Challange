@@ -18,7 +18,9 @@ export const MockUpFileModal: React.FC<mockUpFileModalProps> = ({
     <Modal animationType="fade" transparent={true} visible={modalVisible}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>This is a mock up modal and file</Text>
+          <Text style={styles.modalText}>
+            This is a modal showing mocks file
+          </Text>
           <Text style={styles.modalText}>Select a file</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -74,9 +76,6 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  //   buttonOpen: {
-  //     backgroundColor: '#F194FF',
-  //   },
   buttonClose: {
     backgroundColor: '#2196F3',
   },
@@ -88,5 +87,6 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

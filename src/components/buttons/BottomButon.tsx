@@ -3,7 +3,7 @@ import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {DocumentModel} from '../../models/documentModel';
-import {storageService} from '../../utils/newstorage';
+import {storageService} from '../../storage/newstorage';
 
 interface customProps {
   setIsVisible: (arg0: boolean) => void;

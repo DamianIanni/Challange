@@ -1,24 +1,18 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {DocumentModel} from '../../models/documentModel';
+import {getRelativeTime} from '../../utils/formatDateUtil';
+import {callOnShare} from '../../utils/shareDocumentUtil';
 
 interface ListCardProps {
   data: DocumentModel;
 }
 
 export const ListCard: React.FC<ListCardProps> = ({data}) => {
-  const {Version, Title, Contributors, Attachments, CreatedAt, UpdatedAt} =
-    data;
-
-  // console.log('propse', Attachments);
+  const {Version, Title, Contributors, Attachments, CreatedAt} = data;
 
   return (
     <View style={styles.mainContainer}>
-      {/* <View style={styles.titleContainer}>
-        <Text numberOfLines={1} style={styles.titleCard}>
-          {Title}
-        </Text>
-        <Text style={styles.text}>Version {Version}</Text>
-      </View> */}
       <View style={styles.titleContainer}>
         <Text numberOfLines={1} style={styles.titleCard}>
           {Title}
@@ -53,12 +47,30 @@ export const ListCard: React.FC<ListCardProps> = ({data}) => {
           </View>
           {Attachments.map((element, index) => {
             return (
-              <Text key={index} style={styles.text}>
+              <Text numberOfLines={1} key={index} style={styles.text}>
                 {element}
               </Text>
             );
           })}
         </View>
+      </View>
+      <View
+        style={[
+          styles.titleContainer,
+          {justifyContent: 'space-between', marginTop: '5%'},
+        ]}>
+        <Text numberOfLines={1} style={styles.text}>
+          {`Created ${getRelativeTime(CreatedAt)}`}
+        </Text>
+        <TouchableOpacity
+          style={styles.iconShareContainer}
+          onPress={() => callOnShare(data)}>
+          <Image
+            source={require('../../assests/icons/share.png')}
+            style={styles.icon}
+            tintColor={'grey'}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -71,10 +83,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     backgroundColor: 'white',
-    // marginVertical: '2%',
     borderRadius: 10,
     marginVertical: '2.5%',
-    // width: '100%'
     shadowColor: '#000',
     shadowOffset: {
       width: 2,
@@ -88,25 +98,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    gap: '15%',
+    gap: '5%',
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // backgroundColor: 'yellow',
     width: '100%',
     gap: 10,
   },
-  // titleColumnOneContainer: {
-  //     flexDirection: "row",
-  //     justifyContent: "flex-start",
-  //     alignItems: "center"
-  // }
+
   column: {
     justifyContent: 'center',
     alignItems: 'flex-start',
-    // backgroundColor: 'pink',
+    width: '45%',
     gap: 4,
   },
   iconContainer: {
@@ -133,5 +138,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'left',
     fontWeight: 500,
+  },
+  iconShareContainer: {
+    height: 30,
+    width: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

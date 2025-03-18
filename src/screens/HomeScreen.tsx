@@ -1,14 +1,5 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState, useEffect} from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Platform,
-  FlatList,
-  Button,
-} from 'react-native';
+import {StatusBar, StyleSheet, View, SafeAreaView, Button} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -16,24 +7,23 @@ import {TopBar} from '../components/topBar/TopBar';
 import {BottomButton} from '../components/buttons/BottomButon';
 import {ChangeDisplayButton} from '../components/buttons/ChangeDisplayButton';
 import {SortButton} from '../components/buttons/SortButton';
-import {ListCard} from '../components/cards/ListCard';
-import {GridCard} from '../components/cards/GridCard';
 import {SlideUpCard} from '../components/cards/SlideUpCard';
+import {FlatListComponent} from '../components/cards/FlatLitComponent';
+import {CustomToast} from '../components/modals/CustomToast';
 
 import {DocumentModel} from '../models/documentModel';
 
-// import WebSocketService from '../services/webSoquet';
-
-import {storageService} from '../utils/newstorage';
+import {storageService} from '../storage/newstorage';
 import {getDocuments} from '../services/requests';
 
 export const HomeScreen: React.FC = () => {
-  const [display, setDisplay] = useState('list');
-  const [isVisible, setIsVisible] = useState(false);
+  const [display, setDisplay] = useState<string>('list');
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [newFile, setNewFile] = useState<DocumentModel | null>(null);
   const [flatlistData, setFlatlistData] = useState<DocumentModel[]>([]);
-  // const [messages, setMessages] = useState<String[]>([]);
-  // const websocket = new WebSocketService();
+  const [isStorageCleaned, setIsStorageCleaned] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+  const [toastVisible, setToastVisible] = useState<boolean>(false);
 
   async function apiCall() {
     const storedDocuments = await storageService.getDocumentsArray('documents');
@@ -52,64 +42,63 @@ export const HomeScreen: React.FC = () => {
     }
   }
 
+  async function callOnRefresh() {
+    setRefreshing(true);
+    console.log('CALLING');
+
+    await apiCall();
+    console.log('CALLING 2');
+
+    setRefreshing(false);
+  }
+
   function behaviorSlideUpCard(calledFrom: string) {
     if (calledFrom === 'slideUpCard') {
       setIsVisible(false);
       return;
     }
-    setNewFile(null);
+    setToastVisible(true);
     setIsVisible(false);
   }
 
   useEffect(() => {
     apiCall();
-  }, [isVisible]);
+  }, [isVisible, isStorageCleaned, newFile]);
 
   return (
     <View style={styles.principalContainer}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'red'} />
-      {Platform.OS === 'ios' && (
-        <View style={{backgroundColor: 'white', height: 70}} />
-      )}
+      <StatusBar barStyle={'dark-content'} />
 
       <SafeAreaView style={styles.safeViewContainer}>
-        {/* <TopBar notificationsAmount={messages.length} /> */}
         <TopBar />
         <View style={styles.viewContainer}>
           <View style={styles.orderViewContainer}>
+            <SortButton />
             <Button
               title="clear"
               onPress={async () => {
                 await storageService.clearDocumentsStorage();
-                setIsVisible(false);
+                setIsStorageCleaned(!isStorageCleaned);
                 console.log('LIMPADO');
               }}
             />
-            <SortButton />
             <ChangeDisplayButton changeDisplay={setDisplay} />
           </View>
-          <View style={styles.flatlistContainer}>
-            {display === 'list' ? (
-              <FlatList
-                data={flatlistData}
-                key={display}
-                renderItem={props => <ListCard data={props.item} />}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.flatlistStyle}
-              />
-            ) : (
-              <FlatList
-                data={flatlistData}
-                key={display}
-                renderItem={props => <GridCard data={props.item} />}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.flatlistStyle}
-                columnWrapperStyle={styles.row}
-              />
-            )}
-          </View>
+          <FlatListComponent
+            display={display}
+            data={flatlistData}
+            callOnrefresh={callOnRefresh}
+            refreshing={refreshing}
+          />
         </View>
+        <CustomToast
+          message={newFile?.Title}
+          visible={toastVisible}
+          onHide={() => {
+            setToastVisible(false);
+            setNewFile(null);
+          }}
+        />
       </SafeAreaView>
       {isVisible && (
         <SlideUpCard
@@ -118,6 +107,7 @@ export const HomeScreen: React.FC = () => {
           setNewFile={setNewFile}
         />
       )}
+
       <BottomButton
         isVisible={isVisible}
         setIsVisible={setIsVisible}
@@ -131,7 +121,7 @@ export const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   principalContainer: {
     flex: 1,
-    backgroundColor: Colors.lighter,
+    backgroundColor: 'white',
   },
   row: {
     justifyContent: 'space-between',
@@ -139,33 +129,24 @@ const styles = StyleSheet.create({
   flatlistContainer: {
     width: '100%',
     height: '100%',
-    // backgroundColor: 'red',
-    // alignContent: 'space-between',
   },
   flatlistStyle: {
     paddingBottom: '15%',
-    // paddingTop: '2.5%',
     paddingHorizontal: '5%',
     justifyContent: 'space-between',
-    // alignItems: 'center',
-    // backgroundColor: 'blue',
   },
 
   viewContainer: {
     flex: 1,
-    // paddingHorizontal: '5%',
     flexDirection: 'column',
     width: '100%',
     backgroundColor: Colors.lighter,
-    // height: '100%',
     alignItems: 'center',
   },
   safeViewContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // flexDirection: 'column',
-    // paddingTop: 70,
   },
   orderViewContainer: {
     flexDirection: 'row',

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {
   Text,
@@ -8,7 +9,7 @@ import {
   NativeModules,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {storageService} from '../../utils/newstorage';
+import {storageService} from '../../storage/newstorage';
 import WebSocketService from '../../services/webSoquet';
 import {NotificationModel} from '../../models/notificationModel';
 

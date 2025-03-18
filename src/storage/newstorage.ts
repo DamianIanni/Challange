@@ -87,31 +87,6 @@ class StorageService {
     }
   }
 
-  // Pushear un nuevo objeto al array existente en documentos
-  //   async pushDocumentObject(key: string, newDocument: DocumentModel) {
-  //     try {
-  //       const documents = await this.getDocumentsArray(key);
-  //       documents.push(newDocument);
-  //       await this.saveDocumentArray(key, documents); // Actualizamos el array con el nuevo objeto
-  //     } catch (error) {
-  //       console.error('Error pushing document object:', error);
-  //     }
-  //   }
-
-  // Pushear un nuevo objeto al array existente en notificaciones
-  // async pushNotificationObject(
-  //   key: string,
-  //   newNotification: NotificationModel,
-  // ) {
-  //   try {
-  //     const notifications = await this.getNotificationsArray(key);
-  //     notifications.push(newNotification);
-  //     await this.saveNotification(key, notifications);
-  //   } catch (error) {
-  //     console.error('Error pushing notification object:', error);
-  //   }
-  // }
-
   // Pushear un nuevo array de objetos al existente en documentos
   async pushDocumentArray(key: string, newDocuments: DocumentModel[]) {
     try {
@@ -137,6 +112,7 @@ class StorageService {
   async clearDocumentsStorage() {
     try {
       await this.documentsStorage.clearStore();
+      await this.notificationsStorage.clearStore();
       console.log('Document storage cleared');
     } catch (error) {
       console.error('Error clearing document storage:', error);

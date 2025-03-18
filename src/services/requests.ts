@@ -2,21 +2,6 @@ import {Alert} from 'react-native';
 import axios, {AxiosError} from 'axios';
 import {DocumentModel} from '../models/documentModel';
 
-// interface Contributor {
-//   ID: string;
-//   Name: string;
-// }
-
-// export interface Document {
-//   ID: string;
-//   Title: string;
-//   Attachments: string[];
-//   Contributors: Contributor[];
-//   CreatedAt: string;
-//   UpdatedAt: string;
-//   Version: string;
-// }
-
 const client = axios.create({
   baseURL: 'http://localhost:8080',
   timeout: 5000,

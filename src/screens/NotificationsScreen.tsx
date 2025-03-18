@@ -2,16 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {View, FlatList, Text, StyleSheet} from 'react-native';
 import {NotificationModel} from '../models/notificationModel';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {formatDistanceToNow} from 'date-fns';
-import {storageService} from '../utils/newstorage';
+import {storageService} from '../storage/newstorage';
+import {getRelativeTime} from '../utils/formatDateUtil';
 
 interface ItemProps {
   item: NotificationModel;
 }
-
-const getRelativeTime = (timestamp: string): string => {
-  return formatDistanceToNow(new Date(timestamp), {addSuffix: true});
-};
 
 const Item: React.FC<ItemProps> = ({item}) => {
   return (
@@ -91,12 +87,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleContainer: {
-    // paddingHorizontal: '5%',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // backgroundColor: 'white',
     width: '100%',
-    // height: '10%',
     flexDirection: 'row',
   },
 });

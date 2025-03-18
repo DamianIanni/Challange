@@ -11,6 +11,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTLog.h>
 #import <UserNotifications/UserNotifications.h>
+#import <UIKit/UIKit.h>
 
 @interface RCT_EXTERN_MODULE(MyNativeModule, NSObject)
 
@@ -48,6 +49,17 @@ RCT_EXPORT_METHOD(showNotification:(NSString *)title message:(NSString *)message
       RCTLogError(@"Error al enviar la notificación: %@", error.localizedDescription);
     }
   }];
+}
+
+RCT_EXPORT_METHOD(share:(NSString *)message)
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    UIViewController *rootViewController = UIApplication.sharedApplication.delegate.window.rootViewController;
+
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[message] applicationActivities:nil];
+
+    [rootViewController presentViewController:activityVC animated:YES completion:nil];
+  });
 }
 
 @end
