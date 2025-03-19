@@ -9,16 +9,20 @@ import {
   NativeModules,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {storageService} from '../../storage/newstorage';
 import WebSocketService from '../../services/webSoquet';
 import {NotificationModel} from '../../models/notificationModel';
+import type {RootStackParamList} from '../../../App';
 
 export const TopBar: React.FC = () => {
   const [notificationsAmount, setNotificationsAmount] = useState(0);
   const [notificationBuffer, setNotificationBuffer] = useState<
     NotificationModel[]
   >([]);
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // const navigation = useNavigation();
   const websocket = new WebSocketService();
   const {MyNativeModule} = NativeModules;
 
@@ -36,21 +40,16 @@ export const TopBar: React.FC = () => {
     websocket.connect();
 
     MyNativeModule.getMessage((message: string) => {
-      console.log(message); // Esto imprimirá "Este es el mensaje desde el módulo nativo"
+      console.log(message);
     });
-    console.log('MODULE', MyNativeModule);
 
     if (websocket.socket) {
       websocket.socket.onmessage = async event => {
-        // console.log('Nueva notificación recibida:', event.data);
-
         const newNotification = JSON.parse(event.data);
-
-        // Agregar la notificación al buffer con un límite de 99
         setNotificationBuffer(prev => {
           const updatedBuffer = [...prev, newNotification];
           if (updatedBuffer.length > 99) {
-            updatedBuffer.shift(); // Eliminar la más antigua si se supera el límite
+            updatedBuffer.shift();
           }
           return updatedBuffer;
         });
@@ -62,9 +61,6 @@ export const TopBar: React.FC = () => {
       setNotificationBuffer(prevBuffer => {
         if (prevBuffer.length > 0) {
           const [firstNotification, ...rest] = prevBuffer;
-
-          console.log('Mostrando notificación:', firstNotification);
-
           // Guardar la notificación en el almacenamiento
           storageService.saveNotification('notifications', firstNotification);
           // Actualizar el contador

@@ -1,10 +1,18 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/screens/HomeScreen';
 import {NotificationsScreen} from './src/screens/NotificationsScreen';
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  Home: undefined;
+  Notification: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (
@@ -31,5 +39,14 @@ function App(): React.JSX.Element {
     </NavigationContainer>
   );
 }
+
+export type HomeScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Home'
+>;
+export type NotificationsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Notification'
+>;
 
 export default App;

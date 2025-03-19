@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable curly */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {Text, Animated, StyleSheet} from 'react-native';
@@ -23,22 +25,25 @@ export const CustomToast: React.FC<ToastProps> = ({
         useNativeDriver: true,
       }).start();
 
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
           duration: 300,
           useNativeDriver: true,
         }).start(() => onHide());
-      }, 4000); // Se oculta en 2 segundos
+      }, 4000);
+
+      return () => clearTimeout(timeoutId); // Cleanup the timeout
     }
-  }, [visible]);
+  }, [visible, fadeAnim]);
 
   if (!visible) return null;
 
   return (
     <Animated.View style={[styles.toastContainer, {opacity: fadeAnim}]}>
       <Text numberOfLines={3} style={styles.toastText}>
-        New document <Text style={{fontWeight: 'bold'}}>{message}</Text> added
+        New document <Text style={{fontWeight: 'bold'}}>{message}</Text>{' '}
+        submited
       </Text>
     </Animated.View>
   );

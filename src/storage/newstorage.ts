@@ -41,7 +41,7 @@ class StorageService {
   async saveNotification(key: string, notification: NotificationModel) {
     try {
       const existingNotifications = await this.getNotificationsArray(key);
-      console.log('EXISTE', existingNotifications);
+      // console.log('EXISTE', existingNotifications);
 
       if (existingNotifications) {
         if (existingNotifications.length >= 99) {

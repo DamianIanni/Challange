@@ -7,8 +7,10 @@
     "isolatedModules": true,
     "strict": true,
     "target": "esnext",
-    // "moduleResolution": "node",
-    "skipLibCheck": true
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
+    "module": "NodeNext",
+    "types": ["jest", "node"]
   },
   "include": ["src"],
   "exclude": ["node_modules"]

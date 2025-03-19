@@ -16,13 +16,13 @@ import {DocumentModel} from '../../models/documentModel.ts';
 import {MockUpFileModal} from '../modals/MockUpFileModal.tsx';
 
 interface slideUpCardProps {
-  isVisible: boolean;
+  // isVisible: boolean;
   behaviorSlideUpCard: (arg0: string) => void;
   setNewFile: (arg0: DocumentModel) => void;
 }
 
 export const SlideUpCard: React.FC<slideUpCardProps> = ({
-  isVisible,
+  // isVisible,
   behaviorSlideUpCard,
   setNewFile,
 }) => {
@@ -50,7 +50,7 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
 
   useEffect(() => {
     Animated.timing(slideAnim, {
-      toValue: isVisible ? 0 : 0.3,
+      toValue: 1,
       duration: 300,
       useNativeDriver: true,
     }).start();
@@ -90,6 +90,7 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
               <Text style={styles.textSubTitle}>Name</Text>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  maxLength={40}
                   placeholder="Document Name"
                   value={fileName}
                   style={styles.textInput}
@@ -101,6 +102,7 @@ export const SlideUpCard: React.FC<slideUpCardProps> = ({
               <Text style={styles.textSubTitle}>Version</Text>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  maxLength={8}
                   keyboardType="numeric"
                   placeholder="Document Version"
                   value={fileVersion}

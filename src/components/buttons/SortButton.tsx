@@ -1,25 +1,21 @@
 import React from 'react';
 import {Image, View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
-export const SortButton = () => {
-  //   const [display, setDisplay] = useState(false);
+interface customProps {
+  sortModalVisible: () => void;
+}
 
+export const SortButton: React.FC<customProps> = ({sortModalVisible}) => {
   return (
-    <TouchableOpacity style={styles.mainContainer}>
-      <View
-        style={styles.textContainer}
-        // onPress={() => setDisplay(false)}
-      >
+    <TouchableOpacity style={styles.mainContainer} onPress={sortModalVisible}>
+      <View style={styles.textContainer}>
         <Image
           style={styles.iconSortBy}
           source={require('../../assests/icons/sort_by.png')}
         />
         <Text style={styles.text}>Sort by</Text>
       </View>
-      <View
-        style={styles.iconContainer}
-        // onPress={() => setDisplay(true)}
-      >
+      <View style={styles.iconContainer}>
         <Image
           style={styles.iconArrow}
           source={require('../../assests/icons/arrow_down.png')}

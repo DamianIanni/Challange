@@ -15,8 +15,6 @@
 
 @interface RCT_EXTERN_MODULE(MyNativeModule, NSObject)
 
-RCT_EXTERN_METHOD(showNotification:(NSString *)message)
-
 @end
 
 @implementation MyNativeModule

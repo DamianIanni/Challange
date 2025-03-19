@@ -1,4 +1,12 @@
-import {View, FlatList, StyleSheet, RefreshControl} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+  Text,
+  ScrollView,
+} from 'react-native';
 import {ListCard} from './ListCard';
 import {GridCard} from './GridCard';
 import {DocumentModel} from '../../models/documentModel';
@@ -16,12 +24,29 @@ export const FlatListComponent: React.FC<customProps> = ({
   callOnrefresh,
   refreshing,
 }) => {
+  console.log('LA DATA', data);
+
   return (
     <View style={styles.flatlistContainer}>
-      {display === 'list' ? (
+      {(!data || data.length === 0) && (
+        <ScrollView
+          contentContainerStyle={styles.noDataContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => callOnrefresh()}
+            />
+          }>
+          <Text style={{fontWeight: 'bold'}}>Pull down to refresh</Text>
+        </ScrollView>
+        // <View style={styles.noDataContainer}
+        // >
+        // </View>
+      )}
+      {data.length > 0 && display === 'list' ? (
         <FlatList
           data={data}
-          key={display}
+          key={1}
           renderItem={props => <ListCard data={props.item} />}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.flatlistStyle}
@@ -32,7 +57,7 @@ export const FlatListComponent: React.FC<customProps> = ({
       ) : (
         <FlatList
           data={data}
-          key={display}
+          key={2}
           renderItem={props => <GridCard data={props.item} />}
           numColumns={2}
           showsVerticalScrollIndicator={false}
@@ -59,5 +84,10 @@ const styles = StyleSheet.create({
   },
   row: {
     justifyContent: 'space-between',
+  },
+  noDataContainer: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
