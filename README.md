@@ -50,12 +50,12 @@ Due to time constraints, I made the following decisions:
    or
 
    ```sh
-   npm start
+   npm run start
    ```
 
 3. Run the iOS simulator:
    ```sh
-   yarn ios
+   npm run ios
    ```
    or
    ```sh
@@ -64,13 +64,7 @@ Due to time constraints, I made the following decisions:
 
 ## Running Tests
 
-To execute the tests, run:
-
-```sh
-yarn test
-```
-
-or
+To execute the test, run:
 
 ```sh
 npm run test:requests
