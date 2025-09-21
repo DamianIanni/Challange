@@ -1,6 +1,7 @@
 import {DocumentModel} from '../models/documentModel';
+import {Config} from '../config/environment';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = Config.BASE_URL;
 
 export async function getDocuments(): Promise<DocumentModel[] | null> {
   try {
