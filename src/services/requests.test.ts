@@ -1,6 +1,17 @@
 import {getDocuments} from './requests';
 import {DocumentModel} from '../models/documentModel';
 
+// Mock the Config module
+jest.mock('../config/environment', () => ({
+  Config: {
+    BASE_URL: 'http://localhost:8080',
+    WEBSOCKET_URL: 'ws://localhost:8080/notifications',
+    LOCAL_IP: '192.168.0.6',
+  },
+}));
+
+import {Config} from '../config/environment';
+
 global.fetch = jest.fn(); // Mockeamos fetch global
 
 describe('getDocuments', () => {
@@ -34,7 +45,7 @@ describe('getDocuments', () => {
     const result = await getDocuments();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:8080/documents',
+      `${Config.BASE_URL}/documents`,
       {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
@@ -52,7 +63,7 @@ describe('getDocuments', () => {
     const result = await getDocuments();
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:8080/documents',
+      `${Config.BASE_URL}/documents`,
       {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},

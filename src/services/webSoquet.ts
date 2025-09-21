@@ -1,3 +1,5 @@
+import {Config} from '../config/environment';
+
 class WebSocketService {
   public socket: WebSocket | null = null;
   public isConnected: boolean = false;
@@ -8,7 +10,7 @@ class WebSocketService {
       return;
     }
 
-    this.socket = new WebSocket('ws://localhost:8080/notifications');
+    this.socket = new WebSocket(Config.WEBSOCKET_URL);
 
     this.socket.onopen = () => {
       console.log('Conexión WebSocket abierta');

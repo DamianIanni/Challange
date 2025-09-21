@@ -2,7 +2,7 @@
 
 ## Overview
 
-This technical challenge was developed to be executed on an **iOS simulator**, not a physical device. This decision was made due to issues connecting to the local WebSocket server when using a physical device. Given the limited time available for this challenge, I opted for the simulator to ensure a smooth development process.
+This React Native application can be run on both **iOS simulators** and **physical devices**. The app includes dynamic network configuration that automatically adapts to different environments, supporting both local development and physical device testing.
 
 ## Decisions and Trade-offs
 
@@ -24,8 +24,9 @@ Due to time constraints, I made the following decisions:
 ### **Requirements**
 
 - macOS with Xcode installed
-- Node.js and Yarn (or npm)
+- Node.js and npm
 - React Native CLI installed globally (`npm install -g react-native-cli`)
+- Go server for backend functionality
 
 ### **Server Setup**
 
@@ -40,35 +41,89 @@ Due to time constraints, I made the following decisions:
 1. Install dependencies:
 
    ```sh
-   yarn install
-   ```
-
-   or
-
-   ```sh
    npm install
    ```
 
-2. Start the Metro Bundler:
+2. **Server Setup:**
+
+   The app requires a Go server running on port 8080. The server configuration depends on your target platform:
+
+   **For iOS Simulator:**
 
    ```sh
-   yarn start
+   go run server.go -addr localhost:8080
    ```
 
-   or
+   **For Physical Device:**
 
    ```sh
-   npm run start
+   go run server.go -addr 0.0.0.0:8080
    ```
 
-3. Run the iOS simulator:
+   The `-addr 0.0.0.0:8080` flag allows the server to accept connections from any device on your network, which is necessary for physical devices to connect.
+
+3. **Running the App:**
+
+   **Option 1: Single Command (Recommended)**
+
    ```sh
    npm run ios
    ```
-   or
+
+   **Option 2: Separate Commands**
+
    ```sh
-   npx react-native run-ios
+   # Terminal 1 - Start Metro Bundler
+   npm start
+
+   # Terminal 2 - Run the app
+   npm run ios
    ```
+
+### **Running on Physical Device**
+
+To run the app on a physical iOS device:
+
+1. **Ensure Network Connectivity:**
+   - Your iPhone and Mac must be on the same WiFi network
+   - Your current network IP is configured as `192.168.0.6` in `src/config/environment.ts`
+
+2. **Start the Server for Physical Device:**
+   ```sh
+   go run server.go -addr 0.0.0.0:8080
+   ```
+
+3. **Run on Physical Device:**
+   ```sh
+   npm run ios -- --device
+   ```
+
+   Or select your device from Xcode and run the project.
+
+4. **Troubleshooting Network Issues:**
+
+   If your IP address changes (different WiFi network), update the `LOCAL_IP` constant in `src/config/environment.ts`:
+
+   ```sh
+   # Get your current IP address
+   ipconfig getifaddr en0
+   ```
+
+   Then update the file:
+
+   ```typescript
+   const LOCAL_IP = 'YOUR_NEW_IP_ADDRESS';
+   ```
+
+### **Network Configuration**
+
+The app uses dynamic network configuration:
+
+- **iOS Simulator**: Connects to your local IP address
+- **Physical Device**: Connects to your local IP address
+- **Production**: Ready for production server URLs
+
+The configuration automatically adapts based on the platform and development environment.
 
 ## Running Tests
 
