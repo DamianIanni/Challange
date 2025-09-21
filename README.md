@@ -28,6 +28,14 @@ Due to time constraints, I made the following decisions:
 - React Native CLI installed globally (`npm install -g react-native-cli`)
 - Go server for backend functionality
 
+### **Server Setup**
+
+- Important: To run this project successfully, you will need to run a local server that provides the necessary WebSocket and API endpoints.
+
+- The server code is provided as part of the original technical challenge and was not developed by me. You can find it here:
+
+[Local server](https://github.com/DamianIanni/Challange_server)
+
 ### **Setup**
 
 1. Install dependencies:
